@@ -72,14 +72,16 @@ Ray RayTracer::ray_thru_pixel(int i, int j) {
      * calculate and assign direction to ray which is passoing
      * through current pixel (i, j)
      */
-    float alpha = 0.0f;  // TODO: Implement this
-    float beta = 0.0f;   // TODO: Implement this
+    float a = static_cast<float>(camera.width) / static_cast<float>(camera.height);
+    float scale = tan(glm::radians(camera.fovy * 0.5f));
+    float alpha = (2.0f * ((i + x) / camera.width) - 1.0f);
+    float beta = (1.0f - ((2.0f * (j + y)) / camera.height));
 
     vec3 u(camera.cameraMatrix[0]);
     vec3 v(camera.cameraMatrix[1]);
     vec3 w(camera.cameraMatrix[2]);
 
-    ray.dir = vec3(-1.0f);  // TODO: Implement this
+    ray.dir = glm::normalize(alpha * a * scale * u + beta * scale * v - w);  // TODO: Implement this
 
     return ray;
 }
