@@ -1,0 +1,64 @@
+# Build artifacts
+RayTracer
+*.o
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.out
+*.app
+*.apk
+*.zip
+
+# Temporary files
+*.swp
+*~
+*.tmp
+*.bak
+*.d
+
+# Build
+build/
+
+
+# Images
+*.png
+
+# Object files
+obj/
+*.obj
+
+# Precompiled headers
+*.pch
+
+# Dependency files
+*.dep
+
+# Xcode project files
+*.xcworkspace
+xcuserdata/
+
+# Visual Studio project files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.ncb
+*.sdf
+*.opensdf
+*.log
+*.idb
+*.pdb
+*.ipch
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# Other IDE/editor files
+.idea/
+.vscode/
+.DS_Store
