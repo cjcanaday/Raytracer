@@ -56,6 +56,11 @@ std::vector<Intersection> GeomTriangle::intersect(Ray &ray) {
     vec3 q = cross(s, edge1);
     float v = inv_a * dot(rayDir, q);
 
+    // Check if v is within bounds and u+v <= 1
+    if (v < -EPSILON || u + v > 1.0f + EPSILON) {
+        return intersections;
+    }
+
     // dist along ray
     float t = inv_a * dot(edge2, q);
 
