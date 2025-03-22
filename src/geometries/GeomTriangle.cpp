@@ -21,38 +21,52 @@ GeomTriangle::GeomTriangle(std::vector<glm::vec3> &vertices, std::vector<glm::ve
 
 std::vector<Intersection> GeomTriangle::intersect(Ray &ray) {
     using namespace glm;
-    /**
-     * NOTE: Ray is already transformed to the Model coordinate space.
-     */
-
-    // vector to store the intersections
+    // Vector to store the intersections
     std::vector<Intersection> intersections;
 
-    /**
-     * TODO: Implement the Ray intersection with the current geometry
-     */
+    // Get vertices
+    vec3 v0 = this->vertices[0];
+    vec3 v1 = this->vertices[1];
+    vec3 v2 = this->vertices[2];
 
-    /**
-     * Once you find the intersection, add it to the `intersections` vector.
-     *
-     * Example:
-     * Suppose the ray intersects the current geometry at a point `vec3 point`
-     * at a distance `float t`, and the unit normal vector at the intersection
-     * point is `vec3 normal`. You would then insert an intersection into the
-     * vector as follows:
-     *
-     * intersections.push_back({t, point, normal, this, nullptr});
-     *
-     * Note:
-     * - Here we pass the Model pointer as `nullptr` because it will be
-     *   populated by the Model::intersect() function call.
-     * - Only add intersections that are in front of the camera, i.e.,
-     *   where t > 0.
-     */
+    vec3 rayOrigin = ray.p0;
+    vec3 rayDir = normalize(ray.dir);
 
-    /**
-     * TODO: Update `intersections`
-     */
+    // edges
+    vec3 edge1 = v1 - v0;
+    vec3 edge2 = v2 - v0;
+
+    vec3 h = cross(rayDir, edge2);
+    float a = dot(edge1, h);
+
+    // if a ~0, then parallel
+    const float EPSILON = 0.0001f;
+    if (abs(a) < EPSILON)
+        return intersections;
+
+    float inv_a = 1.0f / a;
+    vec3 s = rayOrigin - v0;
+    float u = inv_a * dot(s, h);
+
+    // Check if u is within bounds [0,1] with margain of err epslion
+    if ((u < -EPSILON) || (u > 1.0f + EPSILON)) {
+        return intersections;
+    }
+
+    vec3 q = cross(s, edge1);
+    float v = inv_a * dot(rayDir, q);
+
+    // dist along ray
+    float t = inv_a * dot(edge2, q);
+
+    // only want intersections in front of cam
+    if (t > 0.0f) {
+        vec3 point = rayOrigin + t * rayDir;
+
+        vec3 normal = normalize(cross(edge1, edge2));
+
+        intersections.push_back({ t, point, normal, this, nullptr });
+    }
 
     return intersections;
 }
