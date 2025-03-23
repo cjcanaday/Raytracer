@@ -64,8 +64,8 @@ Ray RayTracer::ray_thru_pixel(int i, int j) {
      * TODO: Task 1.2
      * Randomly sample x and y inside pixel(i, j)
      */
-    float x = 0.5f;
-    float y = 0.5f;
+    float x = glm::linearRand(0.0f, 1.0f);
+    float y = glm::linearRand(0.0f, 1.0f);
 
     /**
      * TODO: Task 1.1
