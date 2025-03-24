@@ -96,7 +96,7 @@ glm::vec3 GlossyMaterial::get_direct_lighting(Intersection &intersection, Scene 
      * - Models from scene can be accessed by `scene.models`
      */
 
-    // Iterate over all light sources
+     // Iterate over all light sources
     vec3 cummulative_direct_light = vec3(0.0f);
     for (unsigned int idx = 0; idx < scene.light_sources.size(); idx++) {
         // intersection could be with one of the light source to
@@ -116,9 +116,17 @@ glm::vec3 GlossyMaterial::get_direct_lighting(Intersection &intersection, Scene 
          * - Use `light_pos` and `intersection.point` to get direction for shadow ray
          * - Surface normal at point of intersection is stored in `intersection.normal`
          */
+
+        vec3 light_dir = light_pos - intersection.point; // get light dir
+        float dist_to_light = length(light_dir);
+        light_dir = normalize(light_dir); // find magnitude of light
+
+        float shadow_offset = 0.00001f;
+        vec3 offset_pt = intersection.point + shadow_offset * intersection.normal; // offet point by small amount
+
         Ray shadow_ray;
-        shadow_ray.p0 = vec3(0.0f);   // TODO: Update ray start position here
-        shadow_ray.dir = vec3(0.0f);  // TODO: Update ray direction here
+        shadow_ray.p0 = offset_pt; 
+        shadow_ray.dir = light_dir;  
 
         // check if shadow ray intersects any model
         for (unsigned int idx = 0; idx < scene.models.size(); idx++)
@@ -137,17 +145,7 @@ glm::vec3 GlossyMaterial::get_direct_lighting(Intersection &intersection, Scene 
             // light source emission value
             vec3 light_emission = scene.light_sources[idx]->material->emission;
 
-            /**
-             * TODO: Task 4.1
-             * Calculate direct light contribution using lamberts cosine law.
-             * Refer Equation (3) in final project handout for more details
-             *
-             * NOTE:
-             * - Surface normal at point of intersection is stored in `intersection.normal`
-             * - This `if` condition block takes care of `visibility_of_light` part in the equation
-             *   So here you just need to calculate contribution of light like we did in HW3 for diffuse part
-             */
-            vec3 direct_light = vec3(0.0f);  // TODO: Update direct light constribution of light source
+            vec3 direct_light = light_emission * max(dot(intersection.normal, light_dir), 0.0f);  // TODO: Update direct light constribution of light source - Lamberts
 
             // attenuation factor for light source based on distance
             float attenuation_factor = scene.light_sources[idx]->material->get_light_attenuation_factor(closest_intersection.t);
