@@ -21,32 +21,20 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
 
     // Diffuse reflection
     if (random > shininess) {
-      // Step 1: Sample ray direction
-        /**
-         * TODO: Task 6.1
-         * Implement cosine-weighted hemisphere sampling
-         */
         // cosin sample next ray
         float s = linearRand(0.0f, 1.0f);
         float t = linearRand(0.0f, 1.0f);
 
-        // TODO: Update u, v based on Equation (8) in handout
         float u = 2.0f * M_PI * s;
         float v = sqrt(1 - t);
 
-        vec3 hemisphere_sample = vec3(v* cos(u), sqrt(t), v*sin(u));  // TODO: Update value to cosine-weighted sampled direction
+        vec3 hemisphere_sample = vec3(v* cos(u), sqrt(t), v*sin(u)); 
 
         // The direction we sampled above is in local co-ordinate frame
         // we need to align it with the surface normal
         vec3 new_dir = align_with_normal(hemisphere_sample, normal);
 
-        // Step 2: Calculate radiance
-        /**
-         * TODO: Task 6.1
-         * Note:
-         * - C_diffuse = `this->diffuse`
-         */
-        vec3 W_diffuse = this->diffuse * max(dot(normal, new_dir), 0.0f);  // TODO: Calculate the radiance for current bounce
+        vec3 W_diffuse = this->diffuse * max(dot(normal, new_dir), 0.0f); 
 
         // update radiance
         ray.W_wip = ray.W_wip * W_diffuse;
@@ -62,20 +50,12 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
 
     // Specular Reflection
 
-    // Step 1: Calculate reflection direction
-    /**
-     * TODO: Task 6.2
-     * Calculate the perfect mirror reflection direction
-     */
-    vec3 reflection_dir = vec3(0.0f);  // TODO: Update with reflection direction
+
+    vec3 v = -ray.dir;
+    vec3 reflection_dir = normalize(2.0f * (dot(normal, v)) * normal - v); 
 
     // Step 2: Calculate radiance
-    /**
-     * TODO: Task 6.2
-     * Note:
-     * - C_specular = `this->specular`
-     */
-    vec3 W_specular = vec3(0.0f);  // TODO: Calculate the radiance for current bounce
+    vec3 W_specular = this->specular;
 
     // update radiance
     ray.W_wip = ray.W_wip * W_specular;
@@ -108,14 +88,6 @@ glm::vec3 GlossyMaterial::get_direct_lighting(Intersection &intersection, Scene 
         vec3 light_pos = scene.light_sources[idx]->get_surface_point();
 
         // check if point is in shadow
-        /**
-         * TODO: Task 4.1
-         * Shoot a shadow ray towards light source
-         * Note:
-         * - Offset ray starting position by small amount to avoid self shadowing
-         * - Use `light_pos` and `intersection.point` to get direction for shadow ray
-         * - Surface normal at point of intersection is stored in `intersection.normal`
-         */
 
         vec3 light_dir = light_pos - intersection.point; // get light dir
         float dist_to_light = length(light_dir);
@@ -145,7 +117,7 @@ glm::vec3 GlossyMaterial::get_direct_lighting(Intersection &intersection, Scene 
             // light source emission value
             vec3 light_emission = scene.light_sources[idx]->material->emission;
 
-            vec3 direct_light = light_emission * max(dot(intersection.normal, light_dir), 0.0f);  // TODO: Update direct light constribution of light source - Lamberts
+            vec3 direct_light = light_emission * max(dot(intersection.normal, light_dir), 0.0f); 
 
             // attenuation factor for light source based on distance
             float attenuation_factor = scene.light_sources[idx]->material->get_light_attenuation_factor(closest_intersection.t);
