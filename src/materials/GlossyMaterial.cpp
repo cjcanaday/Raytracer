@@ -21,7 +21,7 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
 
     // Diffuse reflection
     if (random > shininess) {
-        // Step 1: Sample ray direction
+      // Step 1: Sample ray direction
         /**
          * TODO: Task 6.1
          * Implement cosine-weighted hemisphere sampling
@@ -31,10 +31,10 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
         float t = linearRand(0.0f, 1.0f);
 
         // TODO: Update u, v based on Equation (8) in handout
-        float u = 0.0f;
-        float v = 0.0f;
+        float u = 2.0f * M_PI * s;
+        float v = sqrt(1 - t);
 
-        vec3 hemisphere_sample = vec3(0.0f);  // TODO: Update value to cosine-weighted sampled direction
+        vec3 hemisphere_sample = vec3(v* cos(u), sqrt(t), v*sin(u));  // TODO: Update value to cosine-weighted sampled direction
 
         // The direction we sampled above is in local co-ordinate frame
         // we need to align it with the surface normal
@@ -46,7 +46,7 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
          * Note:
          * - C_diffuse = `this->diffuse`
          */
-        vec3 W_diffuse = vec3(0.0f);  // TODO: Calculate the radiance for current bounce
+        vec3 W_diffuse = this->diffuse * max(dot(normal, new_dir), 0.0f);  // TODO: Calculate the radiance for current bounce
 
         // update radiance
         ray.W_wip = ray.W_wip * W_diffuse;
