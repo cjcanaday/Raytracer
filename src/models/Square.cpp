@@ -40,10 +40,6 @@ Square::Square(vec3 center, float side_len, vec3 normal, std::shared_ptr<Materia
 
 vec3 Square::get_surface_point() {
     using namespace glm;
-    /**
-     * TODO: Task 4.2
-     * Implement uniform random point sampling on the square
-     */
 
     float u = linearRand(-0.5f, 0.5f);
     float v = linearRand(-0.5f, 0.5f);
